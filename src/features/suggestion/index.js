@@ -1,46 +1,28 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  fetchSuggestion,
-  selectError,
-  selectLoading,
-  // Task 18: Import the `selectSuggestion()` selector from the suggestion slice
-} from './suggestion.slice';
-import './suggestion.css';
+import { fetchSuggestion, selectLoading, selectError, selectSuggestion } from './suggestion.slice'; // Adjust import based on your file structure
 
 export default function Suggestion() {
-  // Task 19: Call useSelector() with the selectSuggestion() selector
-  // The component needs to access the `imageUrl` and `caption` properties of the suggestion object.
+  const dispatch = useDispatch();
   const loading = useSelector(selectLoading);
   const error = useSelector(selectError);
-  const dispatch = useDispatch();
+  const suggestion = useSelector(selectSuggestion);
 
   useEffect(() => {
-    async function loadSuggestion() {
-      // Task 20: Dispatch the fetchSuggestion() action creator
-    }
-    loadSuggestion();
+    dispatch(fetchSuggestion());
   }, [dispatch]);
 
-  let render;
-  if (loading) {
-    render = <h3>Loading...</h3>;
-  } else if (error) {
-    render = <h3>Sorry, we're having trouble loading the suggestion.</h3>;
-  } else {
-    // Task 21: Enable the two JSX lines below needed to display the suggestion on the page
-    render = (
-      <>
-        {/* <img alt={caption} src={imageUrl} />
-        <p>{imageUrl}</p> */}
-      </>
+  if (loading) return <h3>Loading...</h3>;
+  if (error) return <h3>Sorry, we're having trouble loading the suggestion.</h3>;
+
+  if (suggestion) {
+    return (
+        <div>
+          <img alt={suggestion.caption} src={suggestion.imageUrl} />
+          <p>{suggestion.caption}</p>
+        </div>
     );
   }
 
-  return (
-    <section className="suggestion-container">
-      <h2>Suggestion of the Day</h2>
-      {render}
-    </section>
-  );
+  return null;
 }
